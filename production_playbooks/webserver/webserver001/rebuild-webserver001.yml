@@ -1,0 +1,43 @@
+---
+- name: Rebuild the redirector
+  hosts: node431
+  remote_user: root
+  any_errors_fatal: yes
+  vars_prompt:
+
+    name: "confirmation"
+    prompt: "Are you sure you want to run this playbook? It will destroy the current redirector! Answer with 'YES'"
+    default: "NO"
+    private: no
+  tasks:
+    - name: Check Confirmation
+      fail: msg="Playbook run confirmation failed"
+      when: confirmation != "YES"
+    - set_fact:
+        hostname: "www-redirector001"
+        uid: "b212bacb-892b-4f1b-afa9-f53f60629864"
+        ram: "1048576"
+        cpu: "1"
+        storage_pool: "lcsee-kvm1"
+        mac_address: "C0:FF:EE:03:60:82"
+        bridge_device: "virbr0"
+    - copy:
+         remote_src: True
+         src: /srv/lcsee-kvm1/cache/lentos7-base.qcow2
+         dest: "/srv/{{ storage_pool }}/{{ hostname }}.qcow2"
+         owner: root
+         group: root
+         mode: 0755
+    - virt: 
+        name: "{{ hostname }}"
+        command: define
+        xml: "{{ lookup('template', '../../xml/qcow_template.xml') }}"
+    - virt: 
+        name: "{{ hostname }}"
+        state: running
+         
+    - virt: 
+        command: list_vms
+    - pause:
+        minutes: 1 
+    - local_action: command ansible-playbook -vv provision-redirector.yml

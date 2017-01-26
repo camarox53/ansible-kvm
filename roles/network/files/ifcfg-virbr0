@@ -1,0 +1,5 @@
+NAME="virbr0"
+TYPE="Bridge"
+BOOTPROTO="dhcp"
+DEVICE="virbr0"
+ONBOOT="yes"

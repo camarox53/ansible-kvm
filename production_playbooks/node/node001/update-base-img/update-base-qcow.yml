@@ -1,0 +1,22 @@
+---
+- name: Create a VM to update the base image qcow
+  hosts: node001
+  remote_user: root
+  tasks:
+    - set_fact:
+        hostname: "QcowUpdateVM1"
+        uid: "b212bacb-892b-4f1b-afa9-f63f60629864"
+        ram: "1048576"
+        cpu: "1"
+        storage_pool: "kvm1"
+        mac_address: "C0:FF:EE:04:30:33"
+        bridge_device: "virbr0"
+    - virt: 
+        name: "{{ hostname }}"
+        command: define
+        xml: "{{ lookup('template', 'modify_base_template.xml') }}"
+    - virt: 
+        name: "{{ hostname }}"
+        state: running
+    - virt: 
+        command: list_vms

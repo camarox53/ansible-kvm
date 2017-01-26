@@ -1,0 +1,11 @@
+---
+- name: Install Packages needed for a builder
+  yum: pkg={{item}} state=installed
+  with_items:
+  - ansible
+  - git
+  - nmap
+  - htop
+  - mlocate
+  - wireshark
+- copy: src=../../../roles/builder/files/hosts dest=/etc/ansible/hosts

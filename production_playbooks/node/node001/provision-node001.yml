@@ -1,0 +1,7 @@
+---
+- name: Setup node001
+  hosts: node001
+  remote_user: root
+  tasks:
+    - include: ../../../roles/network/tasks/main.yml wp_user=root
+    - include: ../../../roles/keys/tasks/main.yml wp_user=root

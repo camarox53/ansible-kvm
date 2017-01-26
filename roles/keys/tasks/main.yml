@@ -1,0 +1,5 @@
+---
+- copy: src=../../../roles/keys/files/authorized_keys dest=/tmp/authorized_keys 
+- script: ../../../roles/keys/manage-keys.sh /tmp/authorized_keys
+- command: usermod -a cumorris -G wheel
+- lineinfile: "dest=/etc/sudoers state=present regexp='^%wheel' line='%wheel ALL=(ALL) NOPASSWD: ALL'"

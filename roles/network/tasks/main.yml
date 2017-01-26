@@ -1,0 +1,10 @@
+---
+- name: Copy bridge file into place
+  template: src=../../../roles/network/files/ifcfg-virbr0 dest=/etc/sysconfig/network-scripts/ifcfg-virbr0
+- name: Setup Network 
+  script: ../../../roles/network/tasks/network.sh
+
+- systemd:
+    name: network
+    state: started
+    enabled: yes

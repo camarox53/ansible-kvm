@@ -1,0 +1,6 @@
+---
+- name: Provision a builder
+  hosts: builder001
+  remote_user: root
+  tasks:
+    - include: ../../../roles/builder/tasks/main.yml wp_user=root

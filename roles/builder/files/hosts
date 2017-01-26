@@ -1,0 +1,14 @@
+localhost
+
+[builder]
+builder001
+
+[node001]
+node001
+
+[webserver001]
+webserver001
+
+
+
+

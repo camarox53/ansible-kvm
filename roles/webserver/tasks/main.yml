@@ -1,0 +1,18 @@
+---
+- name: Install Packages needed for the redirector
+  yum: pkg={{item}} state=installed
+  with_items:
+  - httpd
+  - xauth 
+
+# Make this use the file module
+- command: mkdir -p /var/www/example.test/public_html
+- command: hostnamectl set-hostname webserver001
+- copy: src=../../../roles/webserver/files/example.conf dest=/etc/httpd/conf.d/example.conf
+- copy: src=../../../roles/webserver/files/index.html dest=/var/www/example.test/public_html/index.html
+- command: chmod -R 755 /var/www
+
+- systemd:
+    name: httpd
+    state: restarted 
+    enabled: yes

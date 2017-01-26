@@ -1,0 +1,6 @@
+---
+- name: Provision a webserver
+  hosts: webserver001
+  remote_user: root
+  tasks:
+    - include: ../../../roles/webserver/tasks/main.yml wp_user=root

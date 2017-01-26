@@ -1,0 +1,34 @@
+---
+- name: Setup New VM on Node001
+  hosts: node001
+  remote_user: root
+  any_errors_fatal: yes
+  vars_prompt:
+
+    name: "confirmation"
+    prompt: "Are you sure you want to run this playbook? It will destroy the current redirector! Answer with 'YES'"
+    default: "NO"
+    private: no
+  tasks:
+    - name: Check Confirmation
+      fail: msg="Playbook run confirmation failed"
+      when: confirmation != "YES"
+    - set_fact:
+        hostname: "TestingVM1"
+        uid: "b212bacb-892b-4f1b-afa9-f63f60629864"
+        ram: "1048576"
+        cpu: "1"
+        storage_pool: "kvm1"
+        mac_address: "C0:FF:EE:04:30:33"
+        bridge_device: "virbr0"
+    - command: 'qemu-img create -f qcow2 /srv/{{ storage_pool }}/{{ hostname }}.qcow2 10G'
+    - virt: 
+        name: "{{ hostname }}"
+        command: define
+        xml: "{{ lookup('template', '../../xml/pxe_template.xml') }}"
+    - virt: 
+        name: "{{ hostname }}"
+        state: running
+         
+    - virt: 
+        command: list_vms
